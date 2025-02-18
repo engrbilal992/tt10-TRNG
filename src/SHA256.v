@@ -1,11 +1,11 @@
-`timescale 1ns / 1ps
+`default_nettype none
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
 // Engineer: 
 // 
 // Create Date:    09:50:40 06/05/2008 
 // Design Name: 
-// Module Name:    hash_computatio 
+// Module Name:    hash_computation 
 // Project Name: 
 // Target Devices: 
 // Tool versions: 

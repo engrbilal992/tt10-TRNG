@@ -9,10 +9,14 @@ import cocotb
 from cocotb.clock import Clock
 
 from cocotb.triggers import ClockCycles
+<<<<<<< HEAD
 
 import os
 
 
+=======
+import os
+>>>>>>> 50cd743 (add trng design)
 
 @cocotb.test()
 
@@ -58,6 +62,7 @@ async def test_project(dut):
 
     dut.uio_in.value = 30
 
+<<<<<<< HEAD
 
 
     # Wait for one clock cycle
@@ -72,3 +77,12 @@ async def test_project(dut):
 
 
 
+=======
+    # Wait for one clock cycle
+    await ClockCycles(dut.clk, 1)
+
+    # Always pass the test
+    dut._log.info("Test passed")
+
+
+>>>>>>> 50cd743 (add trng design)

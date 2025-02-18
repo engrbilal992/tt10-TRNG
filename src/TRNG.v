@@ -317,8 +317,8 @@ module TRNG (
     
     // UART TX Instantiation
     uart_tx #(
-        .TICKS_PER_BIT(868), // for 50 MHz clock it will be 435 with baud rate of 115200
-        .TICKS_PER_BIT_SIZE(10)
+        .TICKS_PER_BIT(435), // for 50 MHz clock it will be 435 with baud rate of 115200
+        .TICKS_PER_BIT_SIZE(9)
     ) uart_tx_inst (
         .i_clk(TRNG_Clock),
         .i_start(uart_start),

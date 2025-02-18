@@ -1,41 +1,30 @@
-![](../../workflows/gds/badge.svg) ![](../../workflows/docs/badge.svg) ![](../../workflows/test/badge.svg) ![](../../workflows/fpga/badge.svg)
+# True Random Number Generator (TRNG) for TinyTapeout ASIC Design
 
-# Tiny Tapeout Verilog Project Template
+This project implements a True Random Number Generator (TRNG) for an ASIC design targeting TinyTapeout. The TRNG utilizes a noise source, a sampler, an 8-bit collector, and a SHA-256 conditioning module to produce high-quality random numbers suitable for cryptographic applications.
 
-- [Read the documentation for project](docs/info.md)
+## How It Works
 
-## What is Tiny Tapeout?
+The TRNG operates by sampling a noise source with a digital circuit. The sampled data undergoes bias removal and conditioning through SHA-256 to ensure cryptographic-quality randomness. A state machine manages the data collection, processing, and output transmission via UART. The TRNG offers two modes:
+- **Raw Entropy Output**: For raw data analysis.
+- **Hashed Output**: For cryptographically secure random numbers.
 
-Tiny Tapeout is an educational project that aims to make it easier and cheaper than ever to get your digital and analog designs manufactured on a real chip.
+Built-in health tests, such as the **Repetition Count Test** (SP800-90B), are included to validate the entropy quality.
 
-To learn more and get started, visit https://tinytapeout.com.
+## How to Test
 
-## Set up your Verilog project
+1. Program the FPGA with the TRNG design.
+2. Connect a UART terminal to the FPGA to receive random number outputs.
+3. Toggle between raw entropy mode and hashed output mode via control signals.
+4. Monitor the output stream for analysis or cryptographic usage.
+5. Perform statistical tests to validate entropy quality.
 
-1. Add your Verilog files to the `src` folder.
-2. Edit the [info.yaml](info.yaml) and update information about your project, paying special attention to the `source_files` and `top_module` properties. If you are upgrading an existing Tiny Tapeout project, check out our [online info.yaml migration tool](https://tinytapeout.github.io/tt-yaml-upgrade-tool/).
-3. Edit [docs/info.md](docs/info.md) and add a description of your project.
-4. Adapt the testbench to your design. See [test/README.md](test/README.md) for more information.
+## Testing on ZCU102 FPGA
 
-The GitHub action will automatically build the ASIC files using [OpenLane](https://www.zerotoasiccourse.com/terminology/openlane/).
+This design has been tested on the **ZCU102 FPGA** to verify functionality and output quality.
 
-## Enable GitHub actions to build the results page
+## External Hardware
 
-- [Enabling GitHub Pages](https://tinytapeout.com/faq/#my-github-action-is-failing-on-the-pages-part)
+- **ZCU102 FPGA Board**
+- **UART-to-USB Adapter** (for serial communication)
+- **Oscilloscope** (for debugging the noise source, if needed)
 
-## Resources
-
-- [FAQ](https://tinytapeout.com/faq/)
-- [Digital design lessons](https://tinytapeout.com/digital_design/)
-- [Learn how semiconductors work](https://tinytapeout.com/siliwiz/)
-- [Join the community](https://tinytapeout.com/discord)
-- [Build your design locally](https://www.tinytapeout.com/guides/local-hardening/)
-
-## What next?
-
-- [Submit your design to the next shuttle](https://app.tinytapeout.com/).
-- Edit [this README](README.md) and explain your design, how it works, and how to test it.
-- Share your project on your social network of choice:
-  - LinkedIn [#tinytapeout](https://www.linkedin.com/search/results/content/?keywords=%23tinytapeout) [@TinyTapeout](https://www.linkedin.com/company/100708654/)
-  - Mastodon [#tinytapeout](https://chaos.social/tags/tinytapeout) [@matthewvenn](https://chaos.social/@matthewvenn)
-  - X (formerly Twitter) [#tinytapeout](https://twitter.com/hashtag/tinytapeout) [@tinytapeout](https://twitter.com/tinytapeout)

@@ -1,3 +1,4 @@
+
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
 // Engineer: Muhamamd Bilal
@@ -244,7 +245,7 @@ endmodule
 // whenever he wans to output RAW data or hashed data. (Default output is hashed data when enable is ON)
 // This module has a conroller state machine which has 6 states, IDLE, COLLECT_HASH, HASH, TRANSMIT_HASH, COLLECT_RAW, TRANSMIT_RAW
 module TRNG (
-    input TRNG_Enable,          // Active low. TRNG outputs random bits till the time this signal is asserted.
+    input TRNG_Enable,          // TRNG outputs random bits till the time this signal is asserted.
     input TRNG_Clock,           // Clock signal (50 MHz) for Tiny Tape out Requiremnts
     input ctrl_mode,            // Control signal: 0 = hashed output, 1 = raw Sample_Out
     output wire failure,        // Indicates if Repetition Count Test failed (if failed, bits discard other wise pass the bits to buffer to store 448 bits)
@@ -327,10 +328,21 @@ module TRNG (
         .o_dout(UART_Tx)
     );
 
+//    // Synchronize ctrl_mode and detect edges
+//    always @(posedge TRNG_Clock) begin
+//        ctrl_mode_sync <= {ctrl_mode_sync[0], ctrl_mode}; // 2-stage synchronizer
+//        prev_ctrl_mode <= ctrl_mode_sync[1]; // Track previous synchronized value
+//    end
+    
     // Synchronize ctrl_mode and detect edges
-    always @(posedge TRNG_Clock) begin
-        ctrl_mode_sync <= {ctrl_mode_sync[0], ctrl_mode}; // 2-stage synchronizer
-        prev_ctrl_mode <= ctrl_mode_sync[1]; // Track previous synchronized value
+    always @(posedge TRNG_Clock or negedge TRNG_Enable) begin
+        if (!TRNG_Enable) begin
+            ctrl_mode_sync <= 2'b00;
+            prev_ctrl_mode <= 1'b0;
+        end else begin
+            ctrl_mode_sync <= {ctrl_mode_sync[0], ctrl_mode}; // 2-stage synchronizer
+            prev_ctrl_mode <= ctrl_mode_sync[1]; // Track previous synchronized value
+        end
     end
 
     // State Machine for Both Modes
@@ -346,8 +358,6 @@ module TRNG (
             discard <= 1'b0;
             chunk_index <= 5'd0;
             uart_start <= 1'b0;
-            ctrl_mode_sync <= 2'b00;  // Moved initialization here
-            prev_ctrl_mode <= 1'b0;   // Moved initialization here
         end else begin
             // Detect mode change and reset state machine
             if (prev_ctrl_mode != ctrl_mode_sync[1]) begin

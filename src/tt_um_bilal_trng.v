@@ -15,14 +15,13 @@ module tt_um_bilal_trng (
     input  wire       clk,      // clock
     input  wire       rst_n     // reset_n - low to reset
 );
-	wire rst;
-	assign rst = ! rst_n;
+
 	assign uio_oe = 8'b0000_0000;
 	assign uio_out = 8'b0000_0000;
 	assign uo_out[7:3] = 5'b0_0000;
 	
 	TRNG TRNG (
-	    .TRNG_Enable(rst),      
+	    .TRNG_Enable(rst_n),      
 	    .TRNG_Clock(clk),           // Clock signal (50 MHz) for Tiny Tape out Requiremnts
 	    .ctrl_mode(ui_in[0]),       // Control signal: 0 = hashed output, 1 = raw Sample_Out
 	    .failure(uo_out[0]),        // Indicates if Repetition Count Test failed (if failed, bits discard other wise pass the bits to buffer to store 448 bits)

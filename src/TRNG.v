@@ -1,4 +1,3 @@
-`default_nettype none
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
 // Engineer: Muhamamd Bilal
@@ -80,14 +79,14 @@ endmodule
 
 /////////////////////////////// Noise_Source_Loop /////////////////////////////////
 //- Module Declaration ----------------------------------------------------------
-(* KEEP = "true" *)module Noise_Source_Loop
+(* dont_touch = "true" *)module Noise_Source_Loop
 (
 	Noise_Source_Loop_In,
 	Noise_Source_Loop_Out
 );
 //- Ports -----------------------------------------------------------------------
-(* KEEP = "true" *)input	Noise_Source_Loop_In;	// FeedBack from the output
-(* KEEP = "true" *)output	Noise_Source_Loop_Out;	// Output and FeedBack to the input
+(* dont_touch = "true" *)input	Noise_Source_Loop_In;	// FeedBack from the output
+(* dont_touch = "true" *)output	Noise_Source_Loop_Out;	// Output and FeedBack to the input
 //- Connections -----------------------------------------------------------------
 (* dont_touch = "true" *)wire	NAND1_OUT_TO_NOT1_IN;
 (* dont_touch = "true" *)wire	NOT1_OUT_TO_NOT2_IN;
@@ -256,25 +255,25 @@ module TRNG (
     // Internal Connections
     wire Noise_Connect;
     wire Sample_Out;
-    reg [8:0] bit_counter = 0;   // For counting 448 bits (hash mode)
-    reg [2:0] raw_bit_counter = 0; // For counting 8 bits (raw mode)
-    reg discard = 1'b0;          // Indicates whether bits are being discarded
+    reg [8:0] bit_counter;   // For counting 448 bits (hash mode)
+    reg [2:0] raw_bit_counter; // For counting 8 bits (raw mode)
+    reg discard;          // Indicates whether bits are being discarded
     reg [447:0] Word_Out;        // 448-bit collected data (hash mode)
     reg [7:0] raw_byte;          // 8-bit collected data (raw mode)
     reg [511:0] Padded_Out;      // 512-bit padded data for SHA-256 requirment for one block processing
     reg Word_Valid;              // Indicates when Padded_Out is valid means it has 512 bits = ({448 data , 63 Zeros , length in 64 bits})
-    reg [4:0] chunk_index = 0;   // Index for selecting 8-bit hash chunks (32 chunks then goes 0 and start over)
+    reg [4:0] chunk_index;   // Index for selecting 8-bit hash chunks (32 chunks then goes 0 and start over)
     reg [7:0] chunk_reg;         // Register to hold current 8-bit chunk (hash mode)
     wire [255:0] hash;           // Full 256-bit hash output
 
     // UART TX Signals
-    reg uart_start = 0;
+    reg uart_start;
     wire uart_done;
     wire uart_busy;
 
     // Synchronize ctrl_mode to avoid metastability
-    reg [1:0] ctrl_mode_sync = 0;
-    reg prev_ctrl_mode = 0;
+    reg [1:0] ctrl_mode_sync;
+    reg prev_ctrl_mode;
 
     // State Machine for Both Modes (HASHED and RAW)
     reg [2:0] state;
@@ -347,6 +346,8 @@ module TRNG (
             discard <= 1'b0;
             chunk_index <= 5'd0;
             uart_start <= 1'b0;
+            ctrl_mode_sync <= 2'b00;  // Moved initialization here
+            prev_ctrl_mode <= 1'b0;   // Moved initialization here
         end else begin
             // Detect mode change and reset state machine
             if (prev_ctrl_mode != ctrl_mode_sync[1]) begin

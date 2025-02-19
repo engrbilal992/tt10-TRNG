@@ -323,7 +323,7 @@ module TRNG (
         .i_clk(TRNG_Clock),
         .i_start(uart_start),
         .i_data(ctrl_mode_sync[1] ? raw_byte : chunk_reg), // ctrl_mode
-        .o_done(1'b0),
+        .o_done(),
         .o_busy(uart_busy),
         .o_dout(UART_Tx)
     );

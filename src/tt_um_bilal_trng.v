@@ -16,18 +16,22 @@ module tt_um_bilal_trng (
     input  wire       rst_n     // reset_n - low to reset
 );
 
-	assign uio_oe = 8'b0000_0000;
-	assign uio_out = 8'b0000_0000;
-	assign uo_out[7:3] = 5'b0_0000;
-	wire _unused = &{ena};
-	
-	TRNG TRNG (
-	    .TRNG_Enable(rst_n),      
-	    .TRNG_Clock(clk),           // Clock signal (50 MHz) for Tiny Tape out Requiremnts
-	    .ctrl_mode(ui_in[0]),       // Control signal: 0 = hashed output, 1 = raw Sample_Out
-	    .failure(uo_out[0]),        // Indicates if Repetition Count Test failed (if failed, bits discard other wise pass the bits to buffer to store 448 bits)
-	    .UART_Tx(uo_out[2]),        // UART Transmitted Data
-	    .hash_rdy(uo_out[1])        // Hash ready signal (For the use if he want to get the value of a hash, he can take it at this signal, when it goes ON, other wise it will generate continous hashed data not just 256 and stops)
-	);
+    // Set unused outputs to zero
+    assign uio_oe = 8'b0000_0000;
+    assign uio_out = 8'b0000_0000;
+    assign uo_out[7:3] = 5'b00000;
+
+    // Capture unused signals to avoid warnings
+    wire _unused = &{ena, uio_in}; // Safely use unused inputs
+
+    TRNG TRNG (
+        .TRNG_Enable(ui_in[0]),
+        .TRNG_Clock(clk),         // Clock signal (50 MHz) for Tiny Tapeout requirements
+        .ctrl_mode(ui_in[1]),     // Control signal: 0 = hashed output, 1 = raw Sample_Out
+        .failure(uo_out[0]),      // Repetition Count Test failure flag
+        .UART_Tx(uo_out[2]),      // UART Transmitted Data
+        .hash_rdy(uo_out[1])      // Hash ready signal
+    );
 
 endmodule
+

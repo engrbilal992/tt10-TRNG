@@ -1,3 +1,5 @@
+![](../../workflows/gds/badge.svg) ![](../../workflows/docs/badge.svg) ![](../../workflows/test/badge.svg) ![](../../workflows/fpga/badge.svg)
+
 # True Random Number Generator (TRNG) for TinyTapeout ASIC Design
 
 This project implements a True Random Number Generator (TRNG) for an ASIC design targeting TinyTapeout. The TRNG utilizes a noise source, a sampler, an 8-bit collector, and a SHA-256 conditioning module to produce high-quality random numbers suitable for cryptographic applications.

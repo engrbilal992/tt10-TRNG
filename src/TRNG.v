@@ -323,16 +323,11 @@ module TRNG (
         .i_clk(TRNG_Clock),
         .i_start(uart_start),
         .i_data(ctrl_mode_sync[1] ? raw_byte : chunk_reg), // ctrl_mode
-        .o_done(),
+        .o_done(1'b0),
         .o_busy(uart_busy),
         .o_dout(UART_Tx)
     );
 
-//    // Synchronize ctrl_mode and detect edges
-//    always @(posedge TRNG_Clock) begin
-//        ctrl_mode_sync <= {ctrl_mode_sync[0], ctrl_mode}; // 2-stage synchronizer
-//        prev_ctrl_mode <= ctrl_mode_sync[1]; // Track previous synchronized value
-//    end
     
     // Synchronize ctrl_mode and detect edges
     always @(posedge TRNG_Clock or negedge TRNG_Enable) begin

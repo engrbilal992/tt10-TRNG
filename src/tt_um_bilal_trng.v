@@ -19,10 +19,7 @@ module tt_um_bilal_trng (
 	assign uio_oe = 8'b0000_0000;
 	assign uio_out = 8'b0000_0000;
 	assign uo_out[7:3] = 5'b0_0000;
-	assign ui_in[7:1] = 7'b000_0000;
-	assign uio_in = 8'b0000_0000;
 	wire _unused = &{ena};
-
 	
 	TRNG TRNG (
 	    .TRNG_Enable(rst_n),      

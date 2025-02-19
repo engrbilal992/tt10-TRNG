@@ -43,8 +43,8 @@ project:
 # The pinout of your project. Leave unused pins blank. DO NOT delete or add any pins.
 pinout:
   # Inputs
-  ui[0]: "ctrl_mode"
-  ui[1]: ""
+  ui[0]: "TRNG_Enable"
+  ui[1]: "ctrl_mode"
   ui[2]: ""
   ui[3]: ""
   ui[4]: ""

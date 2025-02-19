@@ -160,7 +160,7 @@ endmodule
 (* KEEP = "true" *)wire	Loop2_Out_EXOR_In2;
 (* KEEP = "true" *)wire	Loop3_Out_EXOR_In3;
 (* KEEP = "true" *)wire	Loop4_Out_EXOR_In4;
-(* KEEP = "true" *)wire	Loop4_Out_EXOR_In5;
+(* KEEP = "true" *)wire	Loop5_Out_EXOR_In5;
 (* KEEP = "true" *)wire	Noise_Source_In1;
 (* KEEP = "true" *)wire	Noise_Source_In2;
 (* KEEP = "true" *)wire	Noise_Source_In3;
@@ -205,7 +205,7 @@ endmodule
 (* KEEP = "true" *)Noise_Source_Loop Loop5
 (
 	 (* KEEP = "true" *).Noise_Source_Loop_In		(Noise_Source_In5), 
-	 (* KEEP = "true" *).Noise_Source_Loop_Out		(Loop4_Out_EXOR_In5)
+	 (* KEEP = "true" *).Noise_Source_Loop_Out		(Loop5_Out_EXOR_In5)
 );
 //- Instantiation (EXOR_Gate) ---------------------------------------------------
 (* KEEP = "true" *)EXOR_Gate EXOR1 
@@ -214,7 +214,7 @@ endmodule
 	 (* KEEP = "true" *).EXOR_Gate_In2				(Loop2_Out_EXOR_In2), 
 	 (* KEEP = "true" *).EXOR_Gate_In3				(Loop3_Out_EXOR_In3),
 	 (* KEEP = "true" *).EXOR_Gate_In4				(Loop4_Out_EXOR_In4),
-	 (* KEEP = "true" *).EXOR_Gate_In5				(Loop4_Out_EXOR_In5),
+	 (* KEEP = "true" *).EXOR_Gate_In5				(Loop5_Out_EXOR_In5),
 	 (* KEEP = "true" *).EXOR_Gate_Out				(Noise_Source_Out)
 );							
 //-------------------------------------------------------------------------------
@@ -236,7 +236,7 @@ output Sample_Out;
 reg	Sample_Out;
 //- Functionality ---------------------------------------------------------------
 always@(posedge Clock_In)
-	Sample_Out = Noise_In ? 1 : 0;
+	Sample_Out <= Noise_In ? 1 : 0;
 //-------------------------------------------------------------------------------
 endmodule
 
@@ -269,7 +269,7 @@ module TRNG (
 
     // UART TX Signals
     reg uart_start;
-    wire uart_done;
+//    wire uart_done;
     wire uart_busy;
 
     // Synchronize ctrl_mode to avoid metastability
@@ -323,7 +323,7 @@ module TRNG (
         .i_clk(TRNG_Clock),
         .i_start(uart_start),
         .i_data(ctrl_mode_sync[1] ? raw_byte : chunk_reg), // ctrl_mode
-        .o_done(uart_done),
+        .o_done(),
         .o_busy(uart_busy),
         .o_dout(UART_Tx)
     );
@@ -393,7 +393,7 @@ module TRNG (
                         bit_counter <= bit_counter + 1;
 
                         if (bit_counter == 9'd447) begin
-                            Padded_Out <= {Word_Out, 1'b1, 63'b0, 64'd448};
+                            Padded_Out <= {Word_Out[446:0], 1'b1, 64'd448};
                             Word_Valid <= 1'b1; // Start SHA256 hashing
                             state <= STATE_HASH;
                         end else begin
@@ -414,7 +414,7 @@ module TRNG (
                 // Hash Mode: Transmit 32-byte hash
                 STATE_TRANSMIT_HASH: begin
                     if (!uart_busy && !uart_start) begin
-                        if (chunk_index < 6'd32) begin
+                        if ({1'b0,chunk_index} < 6'd32) begin
                             chunk_reg <= hash[chunk_index*8 +: 8]; // Load 8-bit chunk
                             uart_start <= 1'b1; // Trigger UART transmission
                             chunk_index <= chunk_index + 1;

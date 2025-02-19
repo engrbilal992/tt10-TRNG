@@ -1,4 +1,3 @@
-`default_nettype none
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
 // Engineer: Muhamamd Bilal
@@ -26,16 +25,16 @@ module Repetition_Count_Test (
     output reg failure        // Failure signal (asserts when test fails)
 );
 
-    parameter integer CUTOFF = 10; // Maximum allowed consecutive repetitions of the same bit
+    parameter [5:0] CUTOFF = 32; // Maximum allowed consecutive repetitions of the same bit
 
     reg prev_bit;             // Register to store the previous bit
-    reg [3:0] count;          // Counter to track repetitions of the same bit (4 bits for counting up to 15)
+    reg [5:0] count;          // Counter to track repetitions of the same bit (6 bits for counting up to 64, we need 32)
 
     always @(posedge clk or posedge rst) begin
         if (rst) begin
             // Reset the state
             prev_bit <= 1'b0;
-            count <= 4'b0;
+            count <= 6'b0;
             failure <= 1'b0;
         end else begin
             if (bit_in == prev_bit) begin
@@ -46,7 +45,7 @@ module Repetition_Count_Test (
                 end
             end else begin
                 // Reset the counter and update the previous bit
-                count <= 4'b1;
+                count <= 6'b1;
                 prev_bit <= bit_in;
                 failure <= 1'b0; // Clear the failure signal
             end
